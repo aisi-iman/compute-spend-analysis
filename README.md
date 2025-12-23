@@ -253,6 +253,12 @@ compute-spend-analysis/
 4. Review tag compliance monthly
 5. Track savings vs. target KPIs
 
+### Tagging Requirements
+
+To ensure accurate cost attribution and avoid untagged spend appearing in reports:
+
+- **Capacity Block purchases**: Add the tag `Component: capacity-block` to all EC2 Capacity Block reservations. This ensures capacity block costs are properly categorized rather than showing as "untagged" in cost breakdowns.
+
 ## Key Insights from Current Data
 
 Based on your latest report:

@@ -194,6 +194,92 @@ class EC2CostAnalyzer:
             print(f"✗ Error fetching instance type data: {e}")
             return []
 
+    def fetch_costs_by_instance_type_and_tag(self, tag_key: str = 'Component'):
+        """
+        Fetch EC2 costs grouped by instance type AND a specific tag.
+
+        This enables stacked bar charts showing instance type costs broken down by tag value.
+
+        Args:
+            tag_key: The tag to group by (default: 'Component')
+
+        Returns:
+            List of results with costs grouped by instance type and tag
+        """
+        start_date, end_date = self.get_date_range()
+
+        print(f"Fetching cost breakdown by instance type and {tag_key} tag...")
+
+        try:
+            response = self.ce_client.get_cost_and_usage(
+                TimePeriod={
+                    'Start': start_date,
+                    'End': end_date
+                },
+                Granularity='MONTHLY',
+                Metrics=['UnblendedCost'],
+                Filter={
+                    'Dimensions': {
+                        'Key': 'SERVICE',
+                        'Values': ['Amazon Elastic Compute Cloud - Compute']
+                    }
+                },
+                GroupBy=[
+                    {
+                        'Type': 'DIMENSION',
+                        'Key': 'INSTANCE_TYPE'
+                    },
+                    {
+                        'Type': 'TAG',
+                        'Key': tag_key
+                    }
+                ]
+            )
+            return response['ResultsByTime']
+        except Exception as e:
+            print(f"✗ Error fetching instance type by tag data: {e}")
+            return []
+
+    def analyze_instance_type_by_tag(self, results_by_type_and_tag, tag_key: str = 'Component'):
+        """
+        Analyze costs by instance type and tag, returning data suitable for stacked bar charts.
+
+        Args:
+            results_by_type_and_tag: Results from fetch_costs_by_instance_type_and_tag
+            tag_key: The tag key used in the grouping
+
+        Returns:
+            Dict with structure: {instance_type: {tag_value: cost, ...}, ...}
+        """
+        instance_tag_costs = defaultdict(lambda: defaultdict(float))
+
+        for result in results_by_type_and_tag:
+            for group in result.get('Groups', []):
+                keys = group['Keys']
+                # Keys are [instance_type, tag_value]
+                instance_type = keys[0] if keys else 'Unknown'
+                tag_value = keys[1] if len(keys) > 1 else '<Untagged>'
+
+                # Handle empty or special tag values
+                if not tag_value or tag_value == 'None' or tag_value.startswith('$'):
+                    tag_value = '<Untagged>'
+
+                cost = float(group['Metrics']['UnblendedCost']['Amount'])
+                instance_tag_costs[instance_type][tag_value] += cost
+
+        # Convert to regular dict and calculate totals
+        result = {}
+        for instance_type, tag_costs in instance_tag_costs.items():
+            result[instance_type] = {
+                'by_tag': dict(tag_costs),
+                'total': sum(tag_costs.values())
+            }
+
+        # Sort by total cost descending
+        result = dict(sorted(result.items(), key=lambda x: x[1]['total'], reverse=True))
+
+        return result
+
     def fetch_costs_by_region(self):
         """Fetch EC2 costs grouped by region"""
         start_date, end_date = self.get_date_range()
@@ -1585,6 +1671,10 @@ class EC2CostAnalyzer:
         region_data = self.fetch_costs_by_region()
         usage_type_data = self.fetch_costs_by_usage_type()
 
+        # Fetch instance type costs broken down by Component tag (for stacked bar charts)
+        instance_type_by_tag_data = self.fetch_costs_by_instance_type_and_tag('Component')
+        instance_type_by_component = self.analyze_instance_type_by_tag(instance_type_by_tag_data, 'Component')
+
         # Fetch total AWS costs (all services)
         total_aws_time_data = self.fetch_total_aws_costs_by_time()
         service_breakdown_data = self.fetch_costs_by_service()
@@ -1608,6 +1698,7 @@ class EC2CostAnalyzer:
 
             # Common important tags to prioritize
             priority_tags = [
+                'Component', 'component',  # Important for instance type breakdown
                 'Name', 'name',
                 'Environment', 'environment', 'env',
                 'Project', 'project',
@@ -1716,6 +1807,7 @@ class EC2CostAnalyzer:
             # Cost Explorer data - EC2 specific
             'monthly_costs': monthly_costs,
             'instance_type_costs': instance_costs,
+            'instance_type_by_component': instance_type_by_component,  # For stacked bar charts
             'region_costs': region_costs,
             'usage_type_costs': usage_costs,
             'tag_keys': tag_keys,

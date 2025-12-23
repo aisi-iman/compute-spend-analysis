@@ -1075,13 +1075,13 @@ def create_multi_account_kpi_cards(data: Dict[str, Any]) -> go.Figure:
     """
     Create KPI cards for multi-account overview.
 
-    Shows 5 indicators: # Accounts, Total EC2 Cost, Total AWS Cost, EC2 %, Optimization Potential
+    Shows 4 indicators: # Accounts, Total EC2 Cost, Total AWS Cost, Optimization Potential
 
     Args:
         data: Multi-account cost report data
 
     Returns:
-        Plotly Figure with 5 KPI indicators
+        Plotly Figure with 4 KPI indicators
     """
     from plotly.subplots import make_subplots
 
@@ -1090,70 +1090,50 @@ def create_multi_account_kpi_cards(data: Dict[str, Any]) -> go.Figure:
 
     total_ec2_cost = aggregated.get('total_ec2_cost', 0)
     total_aws_cost = aggregated.get('total_aws_cost', total_ec2_cost)
-    ec2_percentage = (total_ec2_cost / total_aws_cost * 100) if total_aws_cost > 0 else 0
     optimization_potential = aggregated.get('total_optimization_potential', 0)
 
     fig = make_subplots(
-        rows=1, cols=5,
-        subplot_titles=(
-            "Accounts Analyzed",
-            "Total EC2 Cost (3-mo)",
-            "Total AWS Cost (3-mo)",
-            "EC2 % of Total",
-            "Optimization Potential"
-        ),
-        specs=[[{"type": "indicator"}] * 5]
+        rows=1, cols=4,
+        specs=[[{"type": "indicator"}] * 4],
+        horizontal_spacing=0.1
     )
 
     # Accounts Analyzed
     fig.add_trace(go.Indicator(
         mode="number",
         value=accounts_analyzed,
-        number={'valueformat': "d", 'font': {'size': 48, 'color': '#1f77b4'}},
-        domain={'x': [0, 1], 'y': [0, 1]}
+        title={'text': "Accounts", 'font': {'size': 14}},
+        number={'valueformat': "d", 'font': {'size': 40, 'color': '#1f77b4'}},
     ), row=1, col=1)
 
     # Total EC2 Cost
     fig.add_trace(go.Indicator(
         mode="number",
         value=total_ec2_cost,
-        number={'prefix': "$", 'valueformat': ",.0f", 'font': {'size': 36, 'color': '#1f77b4'}},
-        domain={'x': [0, 1], 'y': [0, 1]}
+        title={'text': "EC2 Cost (3-mo)", 'font': {'size': 14}},
+        number={'prefix': "$", 'valueformat': ",.0f", 'font': {'size': 32, 'color': '#1f77b4'}},
     ), row=1, col=2)
 
     # Total AWS Cost
     fig.add_trace(go.Indicator(
         mode="number",
         value=total_aws_cost,
-        number={'prefix': "$", 'valueformat': ",.0f", 'font': {'size': 36, 'color': '#ff7f0e'}},
-        domain={'x': [0, 1], 'y': [0, 1]}
+        title={'text': "Total AWS (3-mo)", 'font': {'size': 14}},
+        number={'prefix': "$", 'valueformat': ",.0f", 'font': {'size': 32, 'color': '#ff7f0e'}},
     ), row=1, col=3)
-
-    # EC2 Percentage
-    fig.add_trace(go.Indicator(
-        mode="gauge+number",
-        value=ec2_percentage,
-        number={'suffix': "%", 'valueformat': ".1f"},
-        gauge={
-            'axis': {'range': [0, 100]},
-            'bar': {'color': "#1f77b4"},
-            'steps': [{'range': [0, 100], 'color': "lightgray"}]
-        },
-        domain={'x': [0, 1], 'y': [0, 1]}
-    ), row=1, col=4)
 
     # Optimization Potential
     fig.add_trace(go.Indicator(
         mode="number",
         value=optimization_potential,
-        number={'prefix': "$", 'valueformat': ",.0f", 'suffix': "/mo", 'font': {'size': 32, 'color': '#2ca02c'}},
-        domain={'x': [0, 1], 'y': [0, 1]}
-    ), row=1, col=5)
+        title={'text': "Savings Potential", 'font': {'size': 14}},
+        number={'prefix': "$", 'valueformat': ",.0f", 'suffix': "/mo", 'font': {'size': 28, 'color': '#2ca02c'}},
+    ), row=1, col=4)
 
     fig.update_layout(
-        height=300,
+        height=200,
         showlegend=False,
-        margin=dict(t=60, b=20)
+        margin=dict(t=40, b=20, l=20, r=20)
     )
 
     return fig
@@ -1235,6 +1215,125 @@ def create_multi_account_savings_waterfall(data: Dict[str, Any], title: str = "O
         height=450,
         template='plotly_white',
         yaxis_title='Monthly Savings ($)'
+    )
+
+    return fig
+
+
+def create_instance_type_stacked_by_component(
+    data: Dict[str, Any],
+    top_n: int = 15,
+    title: str = "Instance Types by Component Tag"
+) -> go.Figure:
+    """
+    Create a horizontal stacked bar chart showing instance type costs broken down by Component tag.
+
+    Args:
+        data: Report data containing 'instance_type_by_component' in aggregated section
+              or directly as a dict
+        top_n: Number of top instance types to show
+        title: Chart title
+
+    Returns:
+        Plotly Figure with stacked horizontal bars
+    """
+    # Get instance_type_by_component data
+    if 'aggregated' in data:
+        instance_by_component = data.get('aggregated', {}).get('instance_type_by_component', {})
+    else:
+        instance_by_component = data.get('instance_type_by_component', {})
+
+    if not instance_by_component:
+        fig = go.Figure()
+        fig.add_annotation(
+            text="No Component tag data available.<br>Re-run the analyzer to collect tag data.",
+            xref="paper", yref="paper",
+            x=0.5, y=0.5, showarrow=False,
+            font=dict(size=14, color="#666")
+        )
+        fig.update_layout(height=400, template='plotly_white', title=title)
+        return fig
+
+    # Get top N instance types by total cost
+    sorted_types = sorted(
+        instance_by_component.items(),
+        key=lambda x: x[1].get('total', 0) if isinstance(x[1], dict) else 0,
+        reverse=True
+    )[:top_n]
+
+    if not sorted_types:
+        fig = go.Figure()
+        fig.add_annotation(
+            text="No instance type data available",
+            xref="paper", yref="paper",
+            x=0.5, y=0.5, showarrow=False,
+            font=dict(size=14, color="#666")
+        )
+        fig.update_layout(height=400, template='plotly_white', title=title)
+        return fig
+
+    # Collect all unique component values
+    all_components = set()
+    for instance_type, data_item in sorted_types:
+        by_tag = data_item.get('by_tag', {}) if isinstance(data_item, dict) else {}
+        all_components.update(by_tag.keys())
+
+    # Sort components by total cost across all instance types
+    component_totals = {}
+    for component in all_components:
+        total = sum(
+            data_item.get('by_tag', {}).get(component, 0)
+            for _, data_item in sorted_types
+            if isinstance(data_item, dict)
+        )
+        component_totals[component] = total
+
+    sorted_components = sorted(component_totals.items(), key=lambda x: x[1], reverse=True)
+    component_order = [c[0] for c in sorted_components]
+
+    # Prepare data for stacked bars (reverse order for horizontal bar chart)
+    instance_types = [item[0] for item in reversed(sorted_types)]
+
+    # Color palette for components
+    colors = px.colors.qualitative.Set2 + px.colors.qualitative.Set3
+
+    fig = go.Figure()
+
+    for i, component in enumerate(component_order):
+        costs = []
+        for instance_type, data_item in reversed(sorted_types):
+            by_tag = data_item.get('by_tag', {}) if isinstance(data_item, dict) else {}
+            costs.append(by_tag.get(component, 0))
+
+        # Only add trace if there are non-zero costs
+        if sum(costs) > 0:
+            display_name = component if component != '<Untagged>' else 'Untagged'
+            fig.add_trace(go.Bar(
+                name=display_name,
+                y=instance_types,
+                x=costs,
+                orientation='h',
+                marker_color=colors[i % len(colors)],
+                text=[f"${c:,.0f}" if c > 1000 else "" for c in costs],
+                textposition='inside',
+                hovertemplate=f"{display_name}<br>%{{y}}: $%{{x:,.2f}}<extra></extra>"
+            ))
+
+    fig.update_layout(
+        title=title,
+        barmode='stack',
+        height=max(400, len(instance_types) * 35),
+        template='plotly_white',
+        xaxis_title='Cost ($)',
+        yaxis_title='Instance Type',
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1
+        ),
+        margin=dict(l=120)
     )
 
     return fig

@@ -203,7 +203,14 @@ class MultiAccountAnalyzer:
                 'total_cost': total_cost,
                 'monthly_costs': r.get('monthly_costs', []),
                 'instance_type_costs': r.get('instance_type_costs', {}),
+                'instance_type_by_component': r.get('instance_type_by_component', {}),
                 'region_costs': r.get('region_costs', {}),
+                'tag_keys': r.get('tag_keys', []),
+                'tag_analysis': r.get('tag_analysis', {}),
+                'cloudwatch_analysis': r.get('cloudwatch_analysis', {}),
+                'ebs_analysis': r.get('ebs_analysis', {}),
+                'spot_analysis': r.get('spot_analysis', {}),
+                'ri_sp_analysis': r.get('ri_sp_analysis', {}),
                 'action_plan': r.get('action_plan', {}),
                 'fiscal_year_forecast': r.get('fiscal_year_forecast', {})
             }
@@ -309,6 +316,54 @@ class MultiAccountAnalyzer:
             })
         account_total_costs.sort(key=lambda x: x['total_cost'], reverse=True)
 
+        # Aggregate tag analysis across all accounts
+        all_tag_keys = set()
+        aggregated_tag_analysis = {}
+        for report in reports:
+            # Collect all unique tag keys
+            tag_keys = report.get('tag_keys', [])
+            all_tag_keys.update(tag_keys)
+
+            # Aggregate tag costs
+            tag_analysis = report.get('tag_analysis', {})
+            for tag_key, tag_data in tag_analysis.items():
+                if tag_key not in aggregated_tag_analysis:
+                    aggregated_tag_analysis[tag_key] = defaultdict(float)
+                # tag_data is a dict of {tag_value: cost}
+                if isinstance(tag_data, dict):
+                    for tag_value, cost in tag_data.items():
+                        if isinstance(cost, (int, float)):
+                            aggregated_tag_analysis[tag_key][tag_value] += cost
+
+        # Convert defaultdicts to regular dicts and sort by cost
+        for tag_key in aggregated_tag_analysis:
+            aggregated_tag_analysis[tag_key] = dict(sorted(
+                aggregated_tag_analysis[tag_key].items(),
+                key=lambda x: x[1], reverse=True
+            ))
+
+        # Aggregate instance_type_by_component across all accounts
+        aggregated_instance_by_component = defaultdict(lambda: defaultdict(float))
+        for report in reports:
+            instance_by_component = report.get('instance_type_by_component', {})
+            for instance_type, data in instance_by_component.items():
+                by_tag = data.get('by_tag', {}) if isinstance(data, dict) else {}
+                for tag_value, cost in by_tag.items():
+                    aggregated_instance_by_component[instance_type][tag_value] += cost
+
+        # Convert to final format with totals
+        instance_type_by_component_final = {}
+        for instance_type, tag_costs in aggregated_instance_by_component.items():
+            instance_type_by_component_final[instance_type] = {
+                'by_tag': dict(tag_costs),
+                'total': sum(tag_costs.values())
+            }
+        # Sort by total cost descending
+        instance_type_by_component_final = dict(sorted(
+            instance_type_by_component_final.items(),
+            key=lambda x: x[1]['total'], reverse=True
+        ))
+
         return {
             # EC2 costs
             'total_ec2_cost': sum(m['cost'] for m in aggregated_monthly),
@@ -316,6 +371,7 @@ class MultiAccountAnalyzer:
             'instance_type_costs': dict(sorted(
                 instance_costs.items(), key=lambda x: x[1], reverse=True
             )),
+            'instance_type_by_component': instance_type_by_component_final,
             'region_costs': dict(sorted(
                 region_costs.items(), key=lambda x: x[1], reverse=True
             )),
@@ -328,6 +384,10 @@ class MultiAccountAnalyzer:
                 service_costs.items(), key=lambda x: x[1], reverse=True
             )),
             'total_aws_cost_by_account': account_total_costs,
+
+            # Tags
+            'tag_keys': sorted(list(all_tag_keys)),
+            'tag_analysis': aggregated_tag_analysis,
 
             # Other
             'total_optimization_potential': total_savings,
