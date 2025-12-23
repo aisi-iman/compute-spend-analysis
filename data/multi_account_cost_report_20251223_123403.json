@@ -1,0 +1,1651 @@
+{
+  "generated_at": "2025-12-23T12:34:03.673081",
+  "report_type": "multi_account",
+  "accounts_analyzed": 7,
+  "accounts_failed": 0,
+  "errors": {},
+  "account_reports": {
+    "537124965764": {
+      "account_name": "AISI-Research-Platform-preprod",
+      "account_id": "537124965764",
+      "total_cost": 13850.7705459783,
+      "monthly_costs": [
+        {
+          "period": "2025-09-24 to 2025-10-01",
+          "cost": 554.2807437054,
+          "usage": 3046.0387618693
+        },
+        {
+          "period": "2025-10-01 to 2025-11-01",
+          "cost": 2621.1235618296,
+          "usage": 14203.2667905004
+        },
+        {
+          "period": "2025-11-01 to 2025-12-01",
+          "cost": 3617.2709366229,
+          "usage": 15765.2026668161
+        },
+        {
+          "period": "2025-12-01 to 2025-12-23",
+          "cost": 7058.0953038204,
+          "usage": 12255.7820806744
+        }
+      ],
+      "instance_type_costs": {
+        "m5.xlarge": 5725.521833358,
+        "p5.4xlarge": 5390.967073568,
+        "m6a.xlarge": 598.839005556,
+        "t3.xlarge": 535.8054318112,
+        "c6i.4xlarge": 523.028501616,
+        "m6a.large": 446.8455124947,
+        "m5.large": 172.594886568,
+        "m5.2xlarge": 116.85685284,
+        "t3.2xlarge": 97.9196556672,
+        "m5a.large": 62.4660278,
+        "c6a.large": 45.0471111111,
+        "p4d.24xlarge": 25.3653102473,
+        "t3.large": 24.4801751216,
+        "g5.2xlarge": 17.579386751,
+        "g6.2xlarge": 16.8272671148,
+        "g6.12xlarge": 14.7457939752,
+        "m6a.2xlarge": 7.9305059556,
+        "g6.48xlarge": 7.4377553273,
+        "g6.xlarge": 6.4130960431999995,
+        "t3.medium": 4.0495763448,
+        "t3.micro": 2.6036208176,
+        "c6i.2xlarge": 2.416369248,
+        "c6a.xlarge": 2.2735100808000004,
+        "c6i.xlarge": 1.374834624,
+        "c6a.2xlarge": 0.7143729192,
+        "t3a.medium": 0.2487784675,
+        "NoInstanceType": 0.174587084,
+        "t3a.xlarge": 0.1250180267,
+        "t3.small": 0.0593671216,
+        "g6f.large": 0.0466540805,
+        "t3a.large": 0.010554195,
+        "t3a.micro": 0.0021200424
+      },
+      "region_costs": {
+        "eu-west-2": 13850.7705459783
+      },
+      "action_plan": {
+        "total_savings": 4515.140062275,
+        "immediate": [
+          {
+            "title": "Delete 38 orphaned EBS volumes",
+            "savings": 250.0,
+            "effort": "< 1 hour",
+            "command": "Use AWS Console or: aws ec2 delete-volume --volume-id <vol-id>"
+          },
+          {
+            "title": "Stop or terminate 21 idle instances",
+            "savings": 1050,
+            "effort": "< 1 hour",
+            "command": "aws ec2 stop-instances --instance-ids <instance-id>"
+          }
+        ],
+        "high_priority": [
+          {
+            "title": "Purchase recommended Savings Plans",
+            "savings": 465.140062275,
+            "effort": "< 1 day",
+            "command": "Review recommendations in AWS Cost Explorer \u2192 Savings Plans"
+          }
+        ],
+        "medium_priority": [
+          {
+            "title": "Migrate 26 instances to Spot",
+            "savings": 2600,
+            "effort": "< 1 month",
+            "command": "Use EC2 Spot Instances or Auto Scaling with mixed instances policy"
+          }
+        ]
+      },
+      "fiscal_year_forecast": {
+        "fiscal_year": "2025-04-01 to 2026-03-31",
+        "fiscal_year_label": "FY2025/2026",
+        "generated_at": "2025-12-23T12:28:38.659616",
+        "monthly_data": [
+          {
+            "period_start": "2025-04-01",
+            "period_end": "2025-05-01",
+            "month_label": "Apr 2025",
+            "cost": 9656.8352069608,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-05-01",
+            "period_end": "2025-06-01",
+            "month_label": "May 2025",
+            "cost": 9414.4361424807,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-06-01",
+            "period_end": "2025-07-01",
+            "month_label": "Jun 2025",
+            "cost": 9020.9218296808,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-07-01",
+            "period_end": "2025-08-01",
+            "month_label": "Jul 2025",
+            "cost": 5556.7464632522,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-08-01",
+            "period_end": "2025-09-01",
+            "month_label": "Aug 2025",
+            "cost": 6234.1589440227,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-09-01",
+            "period_end": "2025-10-01",
+            "month_label": "Sep 2025",
+            "cost": 5920.5669351687,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-10-01",
+            "period_end": "2025-11-01",
+            "month_label": "Oct 2025",
+            "cost": 6892.4759835251,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-11-01",
+            "period_end": "2025-12-01",
+            "month_label": "Nov 2025",
+            "cost": 8286.8136575297,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-12-01",
+            "period_end": "2025-12-23",
+            "month_label": "Dec 2025",
+            "cost": 11152.242857319,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-12-01",
+            "period_end": "2026-01-01",
+            "month_label": "Dec 2025",
+            "cost": 15398.433948202415,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          },
+          {
+            "period_start": "2026-01-01",
+            "period_end": "2026-02-01",
+            "month_label": "Jan 2026",
+            "cost": 16811.814726404333,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          },
+          {
+            "period_start": "2026-02-01",
+            "period_end": "2026-03-01",
+            "month_label": "Feb 2026",
+            "cost": 15184.830653435441,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          },
+          {
+            "period_start": "2026-03-01",
+            "period_end": "2026-04-01",
+            "month_label": "Mar 2026",
+            "cost": 16812.326659308772,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          }
+        ],
+        "total_actual": 72135.19801993971,
+        "total_forecast": 64207.40598735097,
+        "total_projected": 136342.60400729068,
+        "forecast_total_from_api": {
+          "mean": 64207.40598735096,
+          "unit": "USD"
+        }
+      }
+    },
+    "302263072849": {
+      "account_name": "AISI-Research-Platform-prod",
+      "account_id": "302263072849",
+      "total_cost": 623819.6075944158,
+      "monthly_costs": [
+        {
+          "period": "2025-09-24 to 2025-10-01",
+          "cost": 22143.6520874179,
+          "usage": 27347.8261089015
+        },
+        {
+          "period": "2025-10-01 to 2025-11-01",
+          "cost": 229334.3212215401,
+          "usage": 233384.5161300646
+        },
+        {
+          "period": "2025-11-01 to 2025-12-01",
+          "cost": 196041.7682829901,
+          "usage": 147293.2900282339
+        },
+        {
+          "period": "2025-12-01 to 2025-12-23",
+          "cost": 176299.8660024677,
+          "usage": 87884.553587962
+        }
+      ],
+      "instance_type_costs": {
+        "i4i.metal": 118815.71684648801,
+        "g6.48xlarge": 108934.20781411271,
+        "p5e.48xlarge": 71431.0,
+        "p4d.24xlarge": 67392.17165815449,
+        "m5.4xlarge": 52532.455870488,
+        "m5.8xlarge": 42282.485990496,
+        "g6.12xlarge": 28452.0929968404,
+        "g5.12xlarge": 21331.1851425594,
+        "c5.metal": 16742.415830976002,
+        "m5.xlarge": 13093.766527248,
+        "m5.2xlarge": 12574.79323938,
+        "p5.48xlarge": 9047.0,
+        "z1d.metal": 8099.976890107,
+        "g6.2xlarge": 7783.8353778764995,
+        "g5.2xlarge": 6831.4423391076,
+        "c5d.metal": 6227.81426544,
+        "p5.4xlarge": 5264.0,
+        "m6a.8xlarge": 4448.1367434672,
+        "m5.large": 4219.314309537,
+        "c5n.metal": 3983.71776264,
+        "g5.48xlarge": 2958.353248064,
+        "g6.24xlarge": 2303.9006073857,
+        "t3.2xlarge": 1214.5163310399998,
+        "m6a.xlarge": 1173.5887361004002,
+        "m6a.4xlarge": 1109.0137491648,
+        "m6a.2xlarge": 1096.245101556,
+        "t3.xlarge": 858.1287886752,
+        "c6i.4xlarge": 486.029057688,
+        "c6a.xlarge": 462.12173412119995,
+        "m4.10xlarge": 449.82286744,
+        "m5.metal": 404.928,
+        "c6a.2xlarge": 293.1547225392,
+        "g5.8xlarge": 187.78319417880002,
+        "g5.4xlarge": 173.6287281531,
+        "r5a.4xlarge": 172.549471584,
+        "c6a.4xlarge": 130.4906178384,
+        "NoInstanceType": 103.029771404,
+        "t3a.2xlarge": 89.907021089,
+        "g5.16xlarge": 88.7003237662,
+        "g5.24xlarge": 79.38901694980001,
+        "m5a.large": 74.25660327599999,
+        "g6.16xlarge": 58.093657471,
+        "m6a.large": 45.1504708335,
+        "m7i.8xlarge": 41.4679715856,
+        "m6i.8xlarge": 40.384760592,
+        "c6id.metal": 39.13803096,
+        "m6i.16xlarge": 29.217067008,
+        "r5d.metal": 23.256649728,
+        "t3.large": 21.4254697568,
+        "m7i.4xlarge": 20.3131106892,
+        "r5a.xlarge": 16.753418948,
+        "c6a.large": 12.8291661666,
+        "g6.4xlarge": 12.755542601799998,
+        "m5a.xlarge": 11.34521546,
+        "a1.medium": 8.746110411,
+        "g6.xlarge": 7.1795780048,
+        "t3a.large": 5.78517089,
+        "r5a.large": 4.43207737,
+        "t3a.small": 4.3478785532,
+        "c8i-flex.2xlarge": 3.2073906001,
+        "t3a.xlarge": 2.8051906966,
+        "g6.8xlarge": 2.7978397274,
+        "r5a.2xlarge": 2.45355474,
+        "m6i.4xlarge": 1.968153432,
+        "m8i-flex.2xlarge": 1.5051216884,
+        "c6a.8xlarge": 1.375980408,
+        "g4dn.2xlarge": 0.83771072,
+        "c8i-flex.large": 0.7726194464,
+        "m6i.2xlarge": 0.75648,
+        "c8i-flex.xlarge": 0.547473,
+        "t3a.medium": 0.5297979025,
+        "t3.small": 0.2677354392,
+        "t3.medium": 0.0939026536
+      },
+      "region_costs": {
+        "eu-west-2": 492948.9414713916,
+        "us-east-2": 110584.08947837741,
+        "eu-west-1": 13641.362423745599,
+        "us-east-1": 6645.2142209012
+      },
+      "action_plan": {
+        "total_savings": 109085.434128679,
+        "immediate": [
+          {
+            "title": "Delete 34 orphaned EBS volumes",
+            "savings": 7253.0,
+            "effort": "< 1 hour",
+            "command": "Use AWS Console or: aws ec2 delete-volume --volume-id <vol-id>"
+          },
+          {
+            "title": "Stop or terminate 352 idle instances",
+            "savings": 17600,
+            "effort": "< 1 hour",
+            "command": "aws ec2 stop-instances --instance-ids <instance-id>"
+          }
+        ],
+        "high_priority": [
+          {
+            "title": "Purchase recommended Savings Plans",
+            "savings": 21862.434128679,
+            "effort": "< 1 day",
+            "command": "Review recommendations in AWS Cost Explorer \u2192 Savings Plans"
+          }
+        ],
+        "medium_priority": [
+          {
+            "title": "Migrate gp2 volumes to gp3",
+            "savings": 80.0,
+            "effort": "< 1 week",
+            "command": "aws ec2 modify-volume --volume-id <vol-id> --volume-type gp3"
+          },
+          {
+            "title": "Migrate 604 instances to Spot",
+            "savings": 60400,
+            "effort": "< 1 month",
+            "command": "Use EC2 Spot Instances or Auto Scaling with mixed instances policy"
+          }
+        ]
+      },
+      "fiscal_year_forecast": {
+        "fiscal_year": "2025-04-01 to 2026-03-31",
+        "fiscal_year_label": "FY2025/2026",
+        "generated_at": "2025-12-23T12:32:07.165071",
+        "monthly_data": [
+          {
+            "period_start": "2025-04-01",
+            "period_end": "2025-05-01",
+            "month_label": "Apr 2025",
+            "cost": 1008117.727145972,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-05-01",
+            "period_end": "2025-06-01",
+            "month_label": "May 2025",
+            "cost": 269146.4326164355,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-06-01",
+            "period_end": "2025-07-01",
+            "month_label": "Jun 2025",
+            "cost": 219590.9642875689,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-07-01",
+            "period_end": "2025-08-01",
+            "month_label": "Jul 2025",
+            "cost": 254870.8377625105,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-08-01",
+            "period_end": "2025-09-01",
+            "month_label": "Aug 2025",
+            "cost": 268282.4051762134,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-09-01",
+            "period_end": "2025-10-01",
+            "month_label": "Sep 2025",
+            "cost": 193075.5541335447,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-10-01",
+            "period_end": "2025-11-01",
+            "month_label": "Oct 2025",
+            "cost": 320609.7654254283,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-11-01",
+            "period_end": "2025-12-01",
+            "month_label": "Nov 2025",
+            "cost": 295513.5456297278,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-12-01",
+            "period_end": "2025-12-23",
+            "month_label": "Dec 2025",
+            "cost": 263251.719634757,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-12-01",
+            "period_end": "2026-01-01",
+            "month_label": "Dec 2025",
+            "cost": 327098.94007236813,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          },
+          {
+            "period_start": "2026-01-01",
+            "period_end": "2026-02-01",
+            "month_label": "Jan 2026",
+            "cost": 253464.31133258546,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          },
+          {
+            "period_start": "2026-02-01",
+            "period_end": "2026-03-01",
+            "month_label": "Feb 2026",
+            "cost": 229343.97088805042,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          },
+          {
+            "period_start": "2026-03-01",
+            "period_end": "2026-04-01",
+            "month_label": "Mar 2026",
+            "cost": 254521.74650669278,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          }
+        ],
+        "total_actual": 3092458.951812158,
+        "total_forecast": 1064428.9687996968,
+        "total_projected": 4156887.9206118546,
+        "forecast_total_from_api": {
+          "mean": 1064428.9687996968,
+          "unit": "USD"
+        }
+      }
+    },
+    "481665131233": {
+      "account_name": "AISI-Research-Platform-dev",
+      "account_id": "481665131233",
+      "total_cost": 5956.9184955434,
+      "monthly_costs": [
+        {
+          "period": "2025-09-24 to 2025-10-01",
+          "cost": 464.6884127684,
+          "usage": 1848.0612450268
+        },
+        {
+          "period": "2025-10-01 to 2025-11-01",
+          "cost": 2057.5548058413,
+          "usage": 8182.7620805496
+        },
+        {
+          "period": "2025-11-01 to 2025-12-01",
+          "cost": 1990.5839437945,
+          "usage": 7917.3368768062
+        },
+        {
+          "period": "2025-12-01 to 2025-12-23",
+          "cost": 1444.0913331392,
+          "usage": 5742.3622640527
+        }
+      ],
+      "instance_type_costs": {
+        "m5.xlarge": 2480.9030935680003,
+        "m6a.2xlarge": 1720.8171267336002,
+        "g4dn.xlarge": 1324.850595765,
+        "m6a.large": 430.3421160111,
+        "NoInstanceType": 0.0055634657
+      },
+      "region_costs": {
+        "eu-west-2": 3476.012289224,
+        "us-east-1": 2480.9062063193996
+      },
+      "action_plan": {
+        "total_savings": 2958.676147872,
+        "immediate": [
+          {
+            "title": "Delete 2770 orphaned EBS volumes",
+            "savings": 1832.9,
+            "effort": "< 1 hour",
+            "command": "Use AWS Console or: aws ec2 delete-volume --volume-id <vol-id>"
+          },
+          {
+            "title": "Stop or terminate 5 idle instances",
+            "savings": 250,
+            "effort": "< 1 hour",
+            "command": "aws ec2 stop-instances --instance-ids <instance-id>"
+          }
+        ],
+        "high_priority": [
+          {
+            "title": "Purchase recommended Savings Plans",
+            "savings": 375.776147872,
+            "effort": "< 1 day",
+            "command": "Review recommendations in AWS Cost Explorer \u2192 Savings Plans"
+          }
+        ],
+        "medium_priority": [
+          {
+            "title": "Migrate 5 instances to Spot",
+            "savings": 500,
+            "effort": "< 1 month",
+            "command": "Use EC2 Spot Instances or Auto Scaling with mixed instances policy"
+          }
+        ]
+      },
+      "fiscal_year_forecast": {
+        "fiscal_year": "2025-04-01 to 2026-03-31",
+        "fiscal_year_label": "FY2025/2026",
+        "generated_at": "2025-12-23T12:32:35.355774",
+        "monthly_data": [
+          {
+            "period_start": "2025-04-01",
+            "period_end": "2025-05-01",
+            "month_label": "Apr 2025",
+            "cost": 4840.3062062886,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-05-01",
+            "period_end": "2025-06-01",
+            "month_label": "May 2025",
+            "cost": 3577.5128399937,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-06-01",
+            "period_end": "2025-07-01",
+            "month_label": "Jun 2025",
+            "cost": 3495.7571761541,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-07-01",
+            "period_end": "2025-08-01",
+            "month_label": "Jul 2025",
+            "cost": 7163.122300124,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-08-01",
+            "period_end": "2025-09-01",
+            "month_label": "Aug 2025",
+            "cost": 14126.0894825492,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-09-01",
+            "period_end": "2025-10-01",
+            "month_label": "Sep 2025",
+            "cost": 10255.1937171167,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-10-01",
+            "period_end": "2025-11-01",
+            "month_label": "Oct 2025",
+            "cost": 10090.0090626368,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-11-01",
+            "period_end": "2025-12-01",
+            "month_label": "Nov 2025",
+            "cost": 9878.2691618246,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-12-01",
+            "period_end": "2025-12-23",
+            "month_label": "Dec 2025",
+            "cost": 7122.7201245013,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-12-01",
+            "period_end": "2026-01-01",
+            "month_label": "Dec 2025",
+            "cost": 9655.530542974004,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          },
+          {
+            "period_start": "2026-01-01",
+            "period_end": "2026-02-01",
+            "month_label": "Jan 2026",
+            "cost": 9660.890968163152,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          },
+          {
+            "period_start": "2026-02-01",
+            "period_end": "2026-03-01",
+            "month_label": "Feb 2026",
+            "cost": 8295.422563246524,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          },
+          {
+            "period_start": "2026-03-01",
+            "period_end": "2026-04-01",
+            "month_label": "Mar 2026",
+            "cost": 8765.831594350198,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          }
+        ],
+        "total_actual": 70548.980071189,
+        "total_forecast": 36377.67566873388,
+        "total_projected": 106926.65573992288,
+        "forecast_total_from_api": {
+          "mean": 36377.67566873388,
+          "unit": "USD"
+        }
+      }
+    },
+    "975049993837": {
+      "account_name": "AISIWAStaging",
+      "account_id": "975049993837",
+      "total_cost": 0.0060226906,
+      "monthly_costs": [
+        {
+          "period": "2025-09-24 to 2025-10-01",
+          "cost": 3.7975e-05,
+          "usage": 0.3691013266
+        },
+        {
+          "period": "2025-10-01 to 2025-11-01",
+          "cost": 0.0001366744,
+          "usage": 0.6820810118
+        },
+        {
+          "period": "2025-11-01 to 2025-12-01",
+          "cost": 0.0057006172,
+          "usage": 6.2987711933
+        },
+        {
+          "period": "2025-12-01 to 2025-12-23",
+          "cost": 0.000147424,
+          "usage": 2.2099911518
+        }
+      ],
+      "instance_type_costs": {
+        "NoInstanceType": 0.0060226906
+      },
+      "region_costs": {
+        "eu-west-2": 0.0060226906
+      },
+      "action_plan": {
+        "total_savings": 167.188721069,
+        "immediate": [],
+        "high_priority": [
+          {
+            "title": "Purchase recommended Savings Plans",
+            "savings": 167.188721069,
+            "effort": "< 1 day",
+            "command": "Review recommendations in AWS Cost Explorer \u2192 Savings Plans"
+          }
+        ],
+        "medium_priority": []
+      },
+      "fiscal_year_forecast": {
+        "fiscal_year": "2025-04-01 to 2026-03-31",
+        "fiscal_year_label": "FY2025/2026",
+        "generated_at": "2025-12-23T12:32:56.846838",
+        "monthly_data": [
+          {
+            "period_start": "2025-04-01",
+            "period_end": "2025-05-01",
+            "month_label": "Apr 2025",
+            "cost": 1710.5891596512,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-05-01",
+            "period_end": "2025-06-01",
+            "month_label": "May 2025",
+            "cost": 1842.4991782389,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-06-01",
+            "period_end": "2025-07-01",
+            "month_label": "Jun 2025",
+            "cost": 1916.1538450814,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-07-01",
+            "period_end": "2025-08-01",
+            "month_label": "Jul 2025",
+            "cost": 2663.0190284157,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-08-01",
+            "period_end": "2025-09-01",
+            "month_label": "Aug 2025",
+            "cost": 2816.8808933752,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-09-01",
+            "period_end": "2025-10-01",
+            "month_label": "Sep 2025",
+            "cost": 3112.8262548682,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-10-01",
+            "period_end": "2025-11-01",
+            "month_label": "Oct 2025",
+            "cost": 3303.1053408472,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-11-01",
+            "period_end": "2025-12-01",
+            "month_label": "Nov 2025",
+            "cost": 4035.5814599765,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-12-01",
+            "period_end": "2025-12-23",
+            "month_label": "Dec 2025",
+            "cost": 3965.6038036012,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-12-01",
+            "period_end": "2026-01-01",
+            "month_label": "Dec 2025",
+            "cost": 5408.198883857382,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          },
+          {
+            "period_start": "2026-01-01",
+            "period_end": "2026-02-01",
+            "month_label": "Jan 2026",
+            "cost": 5883.061390672958,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          },
+          {
+            "period_start": "2026-02-01",
+            "period_end": "2026-03-01",
+            "month_label": "Feb 2026",
+            "cost": 5546.13963886997,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          },
+          {
+            "period_start": "2026-03-01",
+            "period_end": "2026-04-01",
+            "month_label": "Mar 2026",
+            "cost": 6398.377480699227,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          }
+        ],
+        "total_actual": 25366.258964055498,
+        "total_forecast": 23235.777394099536,
+        "total_projected": 48602.036358155034,
+        "forecast_total_from_api": {
+          "mean": 23235.777394099536,
+          "unit": "USD"
+        }
+      }
+    },
+    "992382840154": {
+      "account_name": "AISIWAProduction",
+      "account_id": "992382840154",
+      "total_cost": 231.0184002116,
+      "monthly_costs": [
+        {
+          "period": "2025-09-24 to 2025-10-01",
+          "cost": 14.5082684444,
+          "usage": 190.4964073154
+        },
+        {
+          "period": "2025-10-01 to 2025-11-01",
+          "cost": 52.5802443395,
+          "usage": 847.890395486
+        },
+        {
+          "period": "2025-11-01 to 2025-12-01",
+          "cost": 59.6404183278,
+          "usage": 1063.0613115098
+        },
+        {
+          "period": "2025-12-01 to 2025-12-23",
+          "cost": 104.2894690999,
+          "usage": 1623.1820734117
+        }
+      ],
+      "instance_type_costs": {
+        "NoInstanceType": 231.0184002116
+      },
+      "region_costs": {
+        "eu-west-2": 231.0184002116
+      },
+      "action_plan": {
+        "total_savings": 473.137996952,
+        "immediate": [],
+        "high_priority": [
+          {
+            "title": "Purchase recommended Savings Plans",
+            "savings": 473.137996952,
+            "effort": "< 1 day",
+            "command": "Review recommendations in AWS Cost Explorer \u2192 Savings Plans"
+          }
+        ],
+        "medium_priority": []
+      },
+      "fiscal_year_forecast": {
+        "fiscal_year": "2025-04-01 to 2026-03-31",
+        "fiscal_year_label": "FY2025/2026",
+        "generated_at": "2025-12-23T12:33:19.065840",
+        "monthly_data": [
+          {
+            "period_start": "2025-04-01",
+            "period_end": "2025-05-01",
+            "month_label": "Apr 2025",
+            "cost": 3206.4905291126,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-05-01",
+            "period_end": "2025-06-01",
+            "month_label": "May 2025",
+            "cost": 3802.860834732,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-06-01",
+            "period_end": "2025-07-01",
+            "month_label": "Jun 2025",
+            "cost": 3706.3376657205,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-07-01",
+            "period_end": "2025-08-01",
+            "month_label": "Jul 2025",
+            "cost": 5027.2280276889,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-08-01",
+            "period_end": "2025-09-01",
+            "month_label": "Aug 2025",
+            "cost": 6004.8306790593,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-09-01",
+            "period_end": "2025-10-01",
+            "month_label": "Sep 2025",
+            "cost": 8473.0887433623,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-10-01",
+            "period_end": "2025-11-01",
+            "month_label": "Oct 2025",
+            "cost": 11233.1830905965,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-11-01",
+            "period_end": "2025-12-01",
+            "month_label": "Nov 2025",
+            "cost": 17636.5151887483,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-12-01",
+            "period_end": "2025-12-23",
+            "month_label": "Dec 2025",
+            "cost": 14415.7016711632,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-12-01",
+            "period_end": "2026-01-01",
+            "month_label": "Dec 2025",
+            "cost": 20308.45583109695,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          },
+          {
+            "period_start": "2026-01-01",
+            "period_end": "2026-02-01",
+            "month_label": "Jan 2026",
+            "cost": 24315.164445921197,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          },
+          {
+            "period_start": "2026-02-01",
+            "period_end": "2026-03-01",
+            "month_label": "Feb 2026",
+            "cost": 23656.519501818213,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          },
+          {
+            "period_start": "2026-03-01",
+            "period_end": "2026-04-01",
+            "month_label": "Mar 2026",
+            "cost": 28068.56459480948,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          }
+        ],
+        "total_actual": 73506.23643018359,
+        "total_forecast": 96348.70437364584,
+        "total_projected": 169854.94080382944,
+        "forecast_total_from_api": {
+          "mean": 96348.70437364584,
+          "unit": "USD"
+        }
+      }
+    },
+    "992382757183": {
+      "account_name": "AISI-Self-Hosting-prod",
+      "account_id": "992382757183",
+      "total_cost": 56651.1571050504,
+      "monthly_costs": [
+        {
+          "period": "2025-09-24 to 2025-10-01",
+          "cost": 3119.1923346037,
+          "usage": 1681.8726771501
+        },
+        {
+          "period": "2025-10-01 to 2025-11-01",
+          "cost": 13813.4959923593,
+          "usage": 7447.3457129521
+        },
+        {
+          "period": "2025-11-01 to 2025-12-01",
+          "cost": 13367.9672408053,
+          "usage": 7207.9587884577
+        },
+        {
+          "period": "2025-12-01 to 2025-12-23",
+          "cost": 26350.5015372821,
+          "usage": 28715.99702078
+        }
+      ],
+      "instance_type_costs": {
+        "g6.12xlarge": 31146.008848755202,
+        "p6-b200.48xlarge": 25160.0,
+        "t3a.large": 345.0987401006,
+        "NoInstanceType": 0.049516194599999994
+      },
+      "region_costs": {
+        "us-east-2": 56467.98251777131,
+        "eu-west-2": 183.174527656,
+        "eu-west-1": 3.3534599999999996e-05,
+        "us-east-1": 2.60885e-05
+      },
+      "action_plan": {
+        "total_savings": 292.010343528,
+        "immediate": [
+          {
+            "title": "Delete 17 orphaned EBS volumes",
+            "savings": 104.0,
+            "effort": "< 1 hour",
+            "command": "Use AWS Console or: aws ec2 delete-volume --volume-id <vol-id>"
+          }
+        ],
+        "high_priority": [
+          {
+            "title": "Purchase recommended Savings Plans",
+            "savings": 57.210343528,
+            "effort": "< 1 day",
+            "command": "Review recommendations in AWS Cost Explorer \u2192 Savings Plans"
+          }
+        ],
+        "medium_priority": [
+          {
+            "title": "Migrate gp2 volumes to gp3",
+            "savings": 0.8,
+            "effort": "< 1 week",
+            "command": "aws ec2 modify-volume --volume-id <vol-id> --volume-type gp3"
+          },
+          {
+            "title": "Migrate 1 instances to Spot",
+            "savings": 100,
+            "effort": "< 1 month",
+            "command": "Use EC2 Spot Instances or Auto Scaling with mixed instances policy"
+          }
+        ]
+      },
+      "fiscal_year_forecast": {
+        "fiscal_year": "2025-04-01 to 2026-03-31",
+        "fiscal_year_label": "FY2025/2026",
+        "generated_at": "2025-12-23T12:33:40.947508",
+        "monthly_data": [
+          {
+            "period_start": "2025-04-01",
+            "period_end": "2025-05-01",
+            "month_label": "Apr 2025",
+            "cost": 252270.4250797113,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-05-01",
+            "period_end": "2025-06-01",
+            "month_label": "May 2025",
+            "cost": 84716.8747556162,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-06-01",
+            "period_end": "2025-07-01",
+            "month_label": "Jun 2025",
+            "cost": 63818.2714200559,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-07-01",
+            "period_end": "2025-08-01",
+            "month_label": "Jul 2025",
+            "cost": 29617.4342575388,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-08-01",
+            "period_end": "2025-09-01",
+            "month_label": "Aug 2025",
+            "cost": 14693.670133629,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-09-01",
+            "period_end": "2025-10-01",
+            "month_label": "Sep 2025",
+            "cost": 20899.2360704652,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-10-01",
+            "period_end": "2025-11-01",
+            "month_label": "Oct 2025",
+            "cost": 18763.8047774408,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-11-01",
+            "period_end": "2025-12-01",
+            "month_label": "Nov 2025",
+            "cost": 18133.31605512,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-12-01",
+            "period_end": "2025-12-23",
+            "month_label": "Dec 2025",
+            "cost": 32295.3613549461,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-12-01",
+            "period_end": "2026-01-01",
+            "month_label": "Dec 2025",
+            "cost": 34276.44925525098,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          },
+          {
+            "period_start": "2026-01-01",
+            "period_end": "2026-02-01",
+            "month_label": "Jan 2026",
+            "cost": 12899.074248834004,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          },
+          {
+            "period_start": "2026-02-01",
+            "period_end": "2026-03-01",
+            "month_label": "Feb 2026",
+            "cost": 12275.973941910883,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          },
+          {
+            "period_start": "2026-03-01",
+            "period_end": "2026-04-01",
+            "month_label": "Mar 2026",
+            "cost": 13603.793130209415,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          }
+        ],
+        "total_actual": 535208.3939045232,
+        "total_forecast": 73055.29057620527,
+        "total_projected": 608263.6844807285,
+        "forecast_total_from_api": {
+          "mean": 73055.29057620528,
+          "unit": "USD"
+        }
+      }
+    },
+    "381492090729": {
+      "account_name": "AISIWADevelopment",
+      "account_id": "381492090729",
+      "total_cost": 25.419689062899998,
+      "monthly_costs": [
+        {
+          "period": "2025-09-24 to 2025-10-01",
+          "cost": 1.982493111,
+          "usage": 168.9059954533
+        },
+        {
+          "period": "2025-10-01 to 2025-11-01",
+          "cost": 8.7799151964,
+          "usage": 748.669150416
+        },
+        {
+          "period": "2025-11-01 to 2025-12-01",
+          "cost": 8.4865812935,
+          "usage": 724.0618688738
+        },
+        {
+          "period": "2025-12-01 to 2025-12-23",
+          "cost": 6.170699462,
+          "usage": 524.0410515598
+        }
+      ],
+      "instance_type_costs": {
+        "t3.micro": 25.4177015,
+        "NoInstanceType": 0.0019875629
+      },
+      "region_costs": {
+        "eu-west-2": 25.419689062899998
+      },
+      "action_plan": {
+        "total_savings": 487.894135816,
+        "immediate": [
+          {
+            "title": "Stop or terminate 1 idle instances",
+            "savings": 50,
+            "effort": "< 1 hour",
+            "command": "aws ec2 stop-instances --instance-ids <instance-id>"
+          }
+        ],
+        "high_priority": [
+          {
+            "title": "Purchase recommended Savings Plans",
+            "savings": 337.894135816,
+            "effort": "< 1 day",
+            "command": "Review recommendations in AWS Cost Explorer \u2192 Savings Plans"
+          }
+        ],
+        "medium_priority": [
+          {
+            "title": "Migrate 1 instances to Spot",
+            "savings": 100,
+            "effort": "< 1 month",
+            "command": "Use EC2 Spot Instances or Auto Scaling with mixed instances policy"
+          }
+        ]
+      },
+      "fiscal_year_forecast": {
+        "fiscal_year": "2025-04-01 to 2026-03-31",
+        "fiscal_year_label": "FY2025/2026",
+        "generated_at": "2025-12-23T12:34:02.772454",
+        "monthly_data": [
+          {
+            "period_start": "2025-04-01",
+            "period_end": "2025-05-01",
+            "month_label": "Apr 2025",
+            "cost": 11297.0619605246,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-05-01",
+            "period_end": "2025-06-01",
+            "month_label": "May 2025",
+            "cost": 15214.6846208854,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-06-01",
+            "period_end": "2025-07-01",
+            "month_label": "Jun 2025",
+            "cost": 13243.5361416012,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-07-01",
+            "period_end": "2025-08-01",
+            "month_label": "Jul 2025",
+            "cost": 13680.0874487892,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-08-01",
+            "period_end": "2025-09-01",
+            "month_label": "Aug 2025",
+            "cost": 10549.0256037312,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-09-01",
+            "period_end": "2025-10-01",
+            "month_label": "Sep 2025",
+            "cost": 10930.5465877001,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-10-01",
+            "period_end": "2025-11-01",
+            "month_label": "Oct 2025",
+            "cost": 13186.0614409438,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-11-01",
+            "period_end": "2025-12-01",
+            "month_label": "Nov 2025",
+            "cost": 18366.5345265676,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-12-01",
+            "period_end": "2025-12-23",
+            "month_label": "Dec 2025",
+            "cost": 10039.2249461842,
+            "type": "actual"
+          },
+          {
+            "period_start": "2025-12-01",
+            "period_end": "2026-01-01",
+            "month_label": "Dec 2025",
+            "cost": 10300.660467882155,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          },
+          {
+            "period_start": "2026-01-01",
+            "period_end": "2026-02-01",
+            "month_label": "Jan 2026",
+            "cost": 1794.6060765753496,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          },
+          {
+            "period_start": "2026-02-01",
+            "period_end": "2026-03-01",
+            "month_label": "Feb 2026",
+            "cost": 1738.2883121484538,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          },
+          {
+            "period_start": "2026-03-01",
+            "period_end": "2026-04-01",
+            "month_label": "Mar 2026",
+            "cost": 1928.342091502771,
+            "type": "forecast",
+            "prediction_low": null,
+            "prediction_high": null
+          }
+        ],
+        "total_actual": 116506.7632769273,
+        "total_forecast": 15761.89694810873,
+        "total_projected": 132268.66022503603,
+        "forecast_total_from_api": {
+          "mean": 15761.89694810873,
+          "unit": "USD"
+        }
+      }
+    }
+  },
+  "aggregated": {
+    "total_ec2_cost": 700534.8978529529,
+    "monthly_costs": [
+      {
+        "period": "2025-09-24 to 2025-10-01",
+        "cost": 26298.3043780258,
+        "usage": 34283.570297043
+      },
+      {
+        "period": "2025-10-01 to 2025-11-01",
+        "cost": 247887.85587778062,
+        "usage": 264815.1323409805
+      },
+      {
+        "period": "2025-11-01 to 2025-12-01",
+        "cost": 215085.7231044513,
+        "usage": 179977.2103118908
+      },
+      {
+        "period": "2025-12-01 to 2025-12-23",
+        "cost": 211263.01449269528,
+        "usage": 136748.1280695924
+      }
+    ],
+    "instance_type_costs": {
+      "i4i.metal": 118815.71684648801,
+      "g6.48xlarge": 108941.64556944,
+      "p5e.48xlarge": 71431.0,
+      "p4d.24xlarge": 67417.5369684018,
+      "g6.12xlarge": 59612.8476395708,
+      "m5.4xlarge": 52532.455870488,
+      "m5.8xlarge": 42282.485990496,
+      "p6-b200.48xlarge": 25160.0,
+      "g5.12xlarge": 21331.1851425594,
+      "m5.xlarge": 21300.191454173997,
+      "c5.metal": 16742.415830976002,
+      "m5.2xlarge": 12691.65009222,
+      "p5.4xlarge": 10654.967073568001,
+      "p5.48xlarge": 9047.0,
+      "z1d.metal": 8099.976890107,
+      "g6.2xlarge": 7800.662644991299,
+      "g5.2xlarge": 6849.0217258586,
+      "c5d.metal": 6227.81426544,
+      "m6a.8xlarge": 4448.1367434672,
+      "m5.large": 4391.909196105,
+      "c5n.metal": 3983.71776264,
+      "g5.48xlarge": 2958.353248064,
+      "m6a.2xlarge": 2824.9927342452,
+      "g6.24xlarge": 2303.9006073857,
+      "m6a.xlarge": 1772.4277416564,
+      "t3.xlarge": 1393.9342204864001,
+      "g4dn.xlarge": 1324.850595765,
+      "t3.2xlarge": 1312.4359867071998,
+      "m6a.4xlarge": 1109.0137491648,
+      "c6i.4xlarge": 1009.057559304,
+      "m6a.large": 922.3380993393,
+      "c6a.xlarge": 464.39524420199996,
+      "m4.10xlarge": 449.82286744,
+      "m5.metal": 404.928,
+      "t3a.large": 350.89446518560004,
+      "NoInstanceType": 334.28584861340005,
+      "c6a.2xlarge": 293.8690954584,
+      "g5.8xlarge": 187.78319417880002,
+      "g5.4xlarge": 173.6287281531,
+      "r5a.4xlarge": 172.549471584,
+      "m5a.large": 136.722631076,
+      "c6a.4xlarge": 130.4906178384,
+      "t3a.2xlarge": 89.907021089,
+      "g5.16xlarge": 88.7003237662,
+      "g5.24xlarge": 79.38901694980001,
+      "g6.16xlarge": 58.093657471,
+      "c6a.large": 57.8762772777,
+      "t3.large": 45.9056448784,
+      "m7i.8xlarge": 41.4679715856,
+      "m6i.8xlarge": 40.384760592,
+      "c6id.metal": 39.13803096,
+      "m6i.16xlarge": 29.217067008,
+      "t3.micro": 28.0213223176,
+      "r5d.metal": 23.256649728,
+      "m7i.4xlarge": 20.3131106892,
+      "r5a.xlarge": 16.753418948,
+      "g6.xlarge": 13.592674048,
+      "g6.4xlarge": 12.755542601799998,
+      "m5a.xlarge": 11.34521546,
+      "a1.medium": 8.746110411,
+      "r5a.large": 4.43207737,
+      "t3a.small": 4.3478785532,
+      "t3.medium": 4.1434789984,
+      "c8i-flex.2xlarge": 3.2073906001,
+      "t3a.xlarge": 2.9302087233,
+      "g6.8xlarge": 2.7978397274,
+      "r5a.2xlarge": 2.45355474,
+      "c6i.2xlarge": 2.416369248,
+      "m6i.4xlarge": 1.968153432,
+      "m8i-flex.2xlarge": 1.5051216884,
+      "c6a.8xlarge": 1.375980408,
+      "c6i.xlarge": 1.374834624,
+      "g4dn.2xlarge": 0.83771072,
+      "t3a.medium": 0.77857637,
+      "c8i-flex.large": 0.7726194464,
+      "m6i.2xlarge": 0.75648,
+      "c8i-flex.xlarge": 0.547473,
+      "t3.small": 0.3271025608,
+      "g6f.large": 0.0466540805,
+      "t3a.micro": 0.0021200424
+    },
+    "region_costs": {
+      "eu-west-2": 510715.342946215,
+      "us-east-2": 167052.07199614873,
+      "eu-west-1": 13641.362457280198,
+      "us-east-1": 9126.1204533091
+    },
+    "ec2_cost_by_account": [
+      {
+        "account_id": "302263072849",
+        "account_name": "AISI-Research-Platform-prod",
+        "total_cost": 623819.6075944158
+      },
+      {
+        "account_id": "992382757183",
+        "account_name": "AISI-Self-Hosting-prod",
+        "total_cost": 56651.1571050504
+      },
+      {
+        "account_id": "537124965764",
+        "account_name": "AISI-Research-Platform-preprod",
+        "total_cost": 13850.7705459783
+      },
+      {
+        "account_id": "481665131233",
+        "account_name": "AISI-Research-Platform-dev",
+        "total_cost": 5956.9184955434
+      },
+      {
+        "account_id": "992382840154",
+        "account_name": "AISIWAProduction",
+        "total_cost": 231.0184002116
+      },
+      {
+        "account_id": "381492090729",
+        "account_name": "AISIWADevelopment",
+        "total_cost": 25.419689062899998
+      },
+      {
+        "account_id": "975049993837",
+        "account_name": "AISIWAStaging",
+        "total_cost": 0.0060226906
+      }
+    ],
+    "total_aws_cost": 1143275.099828772,
+    "total_aws_monthly_costs": [
+      {
+        "period": "2025-09-24 to 2025-10-01",
+        "cost": 45103.544635386796
+      },
+      {
+        "period": "2025-10-01 to 2025-11-01",
+        "cost": 384078.40512141853
+      },
+      {
+        "period": "2025-11-01 to 2025-12-01",
+        "cost": 371850.5756794946
+      },
+      {
+        "period": "2025-12-01 to 2025-12-23",
+        "cost": 342242.57439247204
+      }
+    ],
+    "service_costs": {
+      "Amazon Elastic Compute Cloud - Compute": 700534.8978529529,
+      "Tax": 144756.44999999998,
+      "EC2 - Other": 128564.25010899261,
+      "Amazon Elastic Container Service": 31897.410986936604,
+      "AWS Network Firewall": 24740.7363444449,
+      "Amazon GuardDuty": 18989.628342441898,
+      "AmazonCloudWatch": 17321.1970251159,
+      "AWS Config": 13024.646000000002,
+      "Amazon Elastic Load Balancing": 11331.607918481799,
+      "AWS CloudTrail": 8607.277363000001,
+      "Amazon Elastic Container Service for Kubernetes": 7998.798400862,
+      "Amazon Virtual Private Cloud": 7414.575142559199,
+      "Amazon Simple Storage Service": 6796.759163723301,
+      "Amazon Relational Database Service": 2891.4485292200006,
+      "Amazon Elastic File System": 2137.1233293798,
+      "AWS Security Hub": 1604.06453,
+      "Amazon Kinesis": 1446.59120679,
+      "Amazon Redshift": 1327.146496019,
+      "Claude Opus 4.1 (Amazon Bedrock Edition)": 1257.7510949999999,
+      "Amazon OpenSearch Service": 1188.5955653264,
+      "Amazon EC2 Container Registry (ECR)": 1006.0933099798,
+      "AWS Glue": 923.19963736,
+      "AWS WAF": 903.8773573362,
+      "Amazon ElastiCache": 890.602,
+      "AWS Secrets Manager": 887.0856452082,
+      "AWS X-Ray": 865.419969,
+      "Claude Sonnet 4.5 (Amazon Bedrock Edition)": 808.7623071,
+      "Hugging Face Platform": 800.0,
+      "Amazon Inspector": 534.3654528330001,
+      "Amazon Kinesis Firehose": 442.71600542500005,
+      "Claude Opus 4.5 (Amazon Bedrock Edition)": 329.76630500000005,
+      "AWS Key Management Service": 310.42224432759997,
+      "Claude 3.7 Sonnet (Amazon Bedrock Edition)": 140.765997,
+      "AWS Lambda": 127.7188544754,
+      "Claude Sonnet 4 (Amazon Bedrock Edition)": 117.992463,
+      "Claude Opus 4 (Amazon Bedrock Edition)": 111.49008,
+      "Amazon Managed Grafana": 77.0,
+      "Amazon Simple Notification Service": 64.49648001429999,
+      "Amazon Simple Queue Service": 53.1558647486,
+      "Amazon Route 53": 28.436677199999995,
+      "Amazon Athena": 10.776325,
+      "AWS Service Catalog": 4.3078,
+      "AWS CodeArtifact": 2.2910667122,
+      "Amazon CloudFront": 1.6212897011000003,
+      "AWS Cost Explorer": 0.98,
+      "AWS Systems Manager": 0.496205,
+      "Amazon Bedrock": 0.2314359947,
+      "Amazon Cognito": 0.045,
+      "AWS Step Functions": 0.018256767099999998,
+      "Amazon DynamoDB": 0.009773597,
+      "Claude 3.5 Haiku (Amazon Bedrock Edition)": 0.0006184,
+      "Amazon Glacier": 6.2475e-06,
+      "AWS CloudShell": 9.77e-08,
+      "AWS CloudFormation": 0.0,
+      "Amazon Location Service": 0.0,
+      "Claude Haiku 4.5 (Amazon Bedrock Edition)": 0.0,
+      "Claude 3 Sonnet (Amazon Bedrock Edition)": 0.0,
+      "Claude 3.5 Sonnet v2 (Amazon Bedrock Edition)": 0.0,
+      "AWS Certificate Manager": 0.0
+    },
+    "total_aws_cost_by_account": [
+      {
+        "account_id": "302263072849",
+        "account_name": "AISI-Research-Platform-prod",
+        "total_cost": 912240.0580036992
+      },
+      {
+        "account_id": "992382757183",
+        "account_name": "AISI-Self-Hosting-prod",
+        "total_cost": 72946.7762993039
+      },
+      {
+        "account_id": "992382840154",
+        "account_name": "AISIWAProduction",
+        "total_cost": 45619.0411394272
+      },
+      {
+        "account_id": "381492090729",
+        "account_name": "AISIWADevelopment",
+        "total_cost": 43919.223992706
+      },
+      {
+        "account_id": "481665131233",
+        "account_name": "AISI-Research-Platform-dev",
+        "total_cost": 29085.4876080746
+      },
+      {
+        "account_id": "537124965764",
+        "account_name": "AISI-Research-Platform-preprod",
+        "total_cost": 27509.6094232225
+      },
+      {
+        "account_id": "975049993837",
+        "account_name": "AISIWAStaging",
+        "total_cost": 11954.9033623385
+      }
+    ],
+    "total_optimization_potential": 117979.481536191,
+    "fiscal_year_forecast": {
+      "total_actual": 3985730.782478976,
+      "total_forecast": 1373415.7197478411,
+      "total_projected": 5359146.502226817
+    },
+    "total_cost": 700534.8978529529,
+    "cost_by_account": [
+      {
+        "account_id": "302263072849",
+        "account_name": "AISI-Research-Platform-prod",
+        "total_cost": 623819.6075944158
+      },
+      {
+        "account_id": "992382757183",
+        "account_name": "AISI-Self-Hosting-prod",
+        "total_cost": 56651.1571050504
+      },
+      {
+        "account_id": "537124965764",
+        "account_name": "AISI-Research-Platform-preprod",
+        "total_cost": 13850.7705459783
+      },
+      {
+        "account_id": "481665131233",
+        "account_name": "AISI-Research-Platform-dev",
+        "total_cost": 5956.9184955434
+      },
+      {
+        "account_id": "992382840154",
+        "account_name": "AISIWAProduction",
+        "total_cost": 231.0184002116
+      },
+      {
+        "account_id": "381492090729",
+        "account_name": "AISIWADevelopment",
+        "total_cost": 25.419689062899998
+      },
+      {
+        "account_id": "975049993837",
+        "account_name": "AISIWAStaging",
+        "total_cost": 0.0060226906
+      }
+    ]
+  }
+}

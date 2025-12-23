@@ -21,21 +21,30 @@ class DecimalEncoder(json.JSONEncoder):
 
 
 class EC2CostAnalyzer:
-    def __init__(self):
-        """Initialize AWS clients for multi-source analysis"""
+    def __init__(self, session: boto3.Session = None, account_name: str = None):
+        """
+        Initialize AWS clients for multi-source analysis.
+
+        Args:
+            session: Optional boto3 Session. If None, uses default credentials.
+            account_name: Optional friendly name for the account (for logging/reports).
+        """
+        self.session = session or boto3.Session()
+        self.account_name = account_name
+
         try:
-            # Core clients
-            self.ce_client = boto3.client('ce')
-            self.sts_client = boto3.client('sts')
+            # Core clients - use session for cross-account support
+            self.ce_client = self.session.client('ce')
+            self.sts_client = self.session.client('sts')
 
             # New clients for enhanced analysis
-            self.ec2_client = boto3.client('ec2')
-            self.cloudwatch_client = boto3.client('cloudwatch')
-            self.tagging_client = boto3.client('resourcegroupstaggingapi')
+            self.ec2_client = self.session.client('ec2')
+            self.cloudwatch_client = self.session.client('cloudwatch')
+            self.tagging_client = self.session.client('resourcegroupstaggingapi')
 
             # Compute Optimizer (may not be available in all regions)
             try:
-                self.compute_optimizer_client = boto3.client('compute-optimizer')
+                self.compute_optimizer_client = self.session.client('compute-optimizer')
             except Exception as e:
                 print(f"⚠️  Compute Optimizer not available: {e}")
                 self.compute_optimizer_client = None
@@ -43,7 +52,8 @@ class EC2CostAnalyzer:
             # Verify credentials
             identity = self.sts_client.get_caller_identity()
             self.account_id = identity['Account']
-            print(f"✓ Connected to AWS Account: {self.account_id}")
+            display_name = f" ({self.account_name})" if self.account_name else ""
+            print(f"✓ Connected to AWS Account: {self.account_id}{display_name}")
             print(f"✓ User/Role: {identity['Arn']}\n")
 
             # Get available regions for multi-region operations
@@ -52,13 +62,33 @@ class EC2CostAnalyzer:
 
         except Exception as e:
             print(f"✗ Error connecting to AWS: {e}")
-            sys.exit(1)
+            raise RuntimeError(f"Failed to initialize AWS connection: {e}")
 
     def get_date_range(self):
         """Calculate date range for last 3 months"""
         end_date = datetime.now().date()
         start_date = end_date - timedelta(days=90)
         return start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d')
+
+    def get_fiscal_year_range(self):
+        """
+        Calculate April to April fiscal year range for forecasting.
+        Returns the start of the current fiscal year and the end of the fiscal year.
+        Fiscal year runs April 1 to March 31.
+        """
+        today = datetime.now().date()
+        current_year = today.year
+        current_month = today.month
+
+        # Determine the current fiscal year
+        if current_month >= 4:  # April onwards = current calendar year's fiscal year
+            fiscal_year_start = datetime(current_year, 4, 1).date()
+            fiscal_year_end = datetime(current_year + 1, 3, 31).date()
+        else:  # Jan-March = previous calendar year's fiscal year
+            fiscal_year_start = datetime(current_year - 1, 4, 1).date()
+            fiscal_year_end = datetime(current_year, 3, 31).date()
+
+        return fiscal_year_start, fiscal_year_end
 
     def fetch_ec2_costs_by_time(self, granularity='MONTHLY'):
         """Fetch EC2 costs grouped by time period"""
@@ -84,6 +114,52 @@ class EC2CostAnalyzer:
             return response['ResultsByTime']
         except Exception as e:
             print(f"✗ Error fetching cost data: {e}")
+            return []
+
+    def fetch_total_aws_costs_by_time(self, granularity='MONTHLY'):
+        """Fetch total AWS costs (all services) grouped by time period"""
+        start_date, end_date = self.get_date_range()
+
+        print(f"Fetching total AWS costs from {start_date} to {end_date}...")
+
+        try:
+            response = self.ce_client.get_cost_and_usage(
+                TimePeriod={
+                    'Start': start_date,
+                    'End': end_date
+                },
+                Granularity=granularity,
+                Metrics=['UnblendedCost']
+            )
+            return response['ResultsByTime']
+        except Exception as e:
+            print(f"✗ Error fetching total AWS cost data: {e}")
+            return []
+
+    def fetch_costs_by_service(self):
+        """Fetch costs grouped by AWS service"""
+        start_date, end_date = self.get_date_range()
+
+        print("Fetching cost breakdown by service...")
+
+        try:
+            response = self.ce_client.get_cost_and_usage(
+                TimePeriod={
+                    'Start': start_date,
+                    'End': end_date
+                },
+                Granularity='MONTHLY',
+                Metrics=['UnblendedCost'],
+                GroupBy=[
+                    {
+                        'Type': 'DIMENSION',
+                        'Key': 'SERVICE'
+                    }
+                ]
+            )
+            return response['ResultsByTime']
+        except Exception as e:
+            print(f"✗ Error fetching service breakdown: {e}")
             return []
 
     def fetch_costs_by_instance_type(self):
@@ -276,7 +352,7 @@ class EC2CostAnalyzer:
             for instance in instances:
                 try:
                     # Get instance details including type
-                    ec2_regional = boto3.client('ec2', region_name=instance['Region'])
+                    ec2_regional = self.session.client('ec2', region_name=instance['Region'])
                     try:
                         ec2_response = ec2_regional.describe_instances(InstanceIds=[instance['InstanceId']])
                         if ec2_response['Reservations']:
@@ -291,7 +367,7 @@ class EC2CostAnalyzer:
                         instance['State'] = 'unknown'
 
                     # Get CloudWatch metrics
-                    cw_regional = boto3.client('cloudwatch', region_name=instance['Region'])
+                    cw_regional = self.session.client('cloudwatch', region_name=instance['Region'])
 
                     # Get average CPU over last 7 days
                     response = cw_regional.get_metric_statistics(
@@ -332,7 +408,7 @@ class EC2CostAnalyzer:
 
         for region in self.all_regions:
             try:
-                ec2_regional = boto3.client('ec2', region_name=region)
+                ec2_regional = self.session.client('ec2', region_name=region)
 
                 # Get volumes
                 volumes_response = ec2_regional.describe_volumes()
@@ -500,6 +576,180 @@ class EC2CostAnalyzer:
             print(f"✗ Error fetching RI/SP data: {e}")
             return {}
 
+    def fetch_fiscal_year_forecast(self):
+        """
+        Fetch actual spend + forecast for fiscal year (April to April).
+        Returns monthly breakdown with actual spend for past months and
+        forecast for remaining months.
+        """
+        print("Fetching fiscal year forecast (April to April)...")
+
+        fiscal_start, fiscal_end = self.get_fiscal_year_range()
+        today = datetime.now().date()
+
+        # Ensure we don't query future dates for actuals
+        actuals_end = min(today, fiscal_end)
+
+        result = {
+            'fiscal_year': f"{fiscal_start.strftime('%Y-%m-%d')} to {fiscal_end.strftime('%Y-%m-%d')}",
+            'fiscal_year_label': f"FY{fiscal_start.year}/{fiscal_end.year}",
+            'generated_at': datetime.now().isoformat(),
+            'monthly_data': [],
+            'total_actual': 0,
+            'total_forecast': 0,
+            'total_projected': 0
+        }
+
+        try:
+            # PART 1: Fetch actual costs for completed months (from fiscal year start to today)
+            if fiscal_start < actuals_end:
+                print(f"  Fetching actual costs from {fiscal_start} to {actuals_end}...")
+
+                # Fetch ALL account costs (not just EC2)
+                response = self.ce_client.get_cost_and_usage(
+                    TimePeriod={
+                        'Start': fiscal_start.strftime('%Y-%m-%d'),
+                        'End': actuals_end.strftime('%Y-%m-%d')
+                    },
+                    Granularity='MONTHLY',
+                    Metrics=['UnblendedCost']
+                )
+
+                for period in response.get('ResultsByTime', []):
+                    period_start = period['TimePeriod']['Start']
+                    period_end = period['TimePeriod']['End']
+                    cost = float(period['Total']['UnblendedCost']['Amount'])
+
+                    result['monthly_data'].append({
+                        'period_start': period_start,
+                        'period_end': period_end,
+                        'month_label': datetime.strptime(period_start, '%Y-%m-%d').strftime('%b %Y'),
+                        'cost': cost,
+                        'type': 'actual'
+                    })
+                    result['total_actual'] += cost
+
+                print(f"    Found {len(response.get('ResultsByTime', []))} months of actual data")
+
+            # PART 2: Fetch forecast for remaining months (from today to fiscal year end)
+            # Cost Explorer forecast requires at least 1 day in the future
+            forecast_start = today + timedelta(days=1)
+
+            if forecast_start < fiscal_end:
+                print(f"  Fetching forecast from {forecast_start} to {fiscal_end}...")
+
+                try:
+                    forecast_response = self.ce_client.get_cost_forecast(
+                        TimePeriod={
+                            'Start': forecast_start.strftime('%Y-%m-%d'),
+                            'End': fiscal_end.strftime('%Y-%m-%d')
+                        },
+                        Metric='UNBLENDED_COST',
+                        Granularity='MONTHLY'
+                    )
+
+                    # Process forecast results
+                    for period in forecast_response.get('ForecastResultsByTime', []):
+                        period_start = period['TimePeriod']['Start']
+                        period_end = period['TimePeriod']['End']
+                        mean_value = float(period.get('MeanValue', 0))
+
+                        # Get prediction intervals if available
+                        prediction_low = None
+                        prediction_high = None
+                        if 'PredictionIntervalLowerBound' in period:
+                            prediction_low = float(period['PredictionIntervalLowerBound'])
+                        if 'PredictionIntervalUpperBound' in period:
+                            prediction_high = float(period['PredictionIntervalUpperBound'])
+
+                        result['monthly_data'].append({
+                            'period_start': period_start,
+                            'period_end': period_end,
+                            'month_label': datetime.strptime(period_start, '%Y-%m-%d').strftime('%b %Y'),
+                            'cost': mean_value,
+                            'type': 'forecast',
+                            'prediction_low': prediction_low,
+                            'prediction_high': prediction_high
+                        })
+                        result['total_forecast'] += mean_value
+
+                    # Also capture the total forecast
+                    if 'Total' in forecast_response:
+                        result['forecast_total_from_api'] = {
+                            'mean': float(forecast_response['Total'].get('Amount', 0)),
+                            'unit': forecast_response['Total'].get('Unit', 'USD')
+                        }
+
+                    print(f"    Generated forecast for {len(forecast_response.get('ForecastResultsByTime', []))} months")
+
+                except self.ce_client.exceptions.DataUnavailableException as e:
+                    print(f"  ⚠️  Forecast not available: {e}")
+                    print("      (Forecast requires sufficient historical data)")
+                except Exception as e:
+                    print(f"  ⚠️  Could not generate forecast: {e}")
+
+            # Calculate total projected spend
+            result['total_projected'] = result['total_actual'] + result['total_forecast']
+
+            # Sort monthly data by period
+            result['monthly_data'].sort(key=lambda x: x['period_start'])
+
+            print(f"\n  📊 Fiscal Year Summary ({result['fiscal_year_label']}):")
+            print(f"     Actual spend to date: ${result['total_actual']:,.2f}")
+            print(f"     Forecasted remaining: ${result['total_forecast']:,.2f}")
+            print(f"     Total projected:      ${result['total_projected']:,.2f}")
+
+            return result
+
+        except Exception as e:
+            print(f"✗ Error fetching fiscal year forecast: {e}")
+            return result
+
+    def analyze_fiscal_year_forecast(self, forecast_data):
+        """Analyze and display fiscal year forecast data"""
+        print("\n" + "="*80)
+        print("FISCAL YEAR FORECAST (APRIL TO APRIL)")
+        print("="*80)
+
+        if not forecast_data or not forecast_data.get('monthly_data'):
+            print("\n⚠️  No fiscal year forecast data available")
+            return forecast_data
+
+        fy_label = forecast_data.get('fiscal_year_label', 'FY')
+        monthly_data = forecast_data.get('monthly_data', [])
+
+        print(f"\n📅 {fy_label}: {forecast_data.get('fiscal_year', 'N/A')}")
+        print(f"\n{'Month':<12} {'Type':<10} {'Cost':>15}")
+        print("-" * 40)
+
+        for month in monthly_data:
+            month_label = month.get('month_label', 'N/A')
+            cost_type = month.get('type', 'unknown')
+            cost = month.get('cost', 0)
+            type_indicator = "📊" if cost_type == 'actual' else "🔮"
+            print(f"{month_label:<12} {type_indicator} {cost_type:<8} ${cost:>12,.2f}")
+
+        print("-" * 40)
+        print(f"\n💰 TOTALS:")
+        print(f"   Actual spend (YTD):     ${forecast_data.get('total_actual', 0):>12,.2f}")
+        print(f"   Forecasted remaining:   ${forecast_data.get('total_forecast', 0):>12,.2f}")
+        print(f"   ─────────────────────────────────────")
+        print(f"   Projected FY Total:     ${forecast_data.get('total_projected', 0):>12,.2f}")
+
+        # Calculate average monthly
+        actual_months = len([m for m in monthly_data if m.get('type') == 'actual'])
+        forecast_months = len([m for m in monthly_data if m.get('type') == 'forecast'])
+
+        if actual_months > 0:
+            avg_actual = forecast_data.get('total_actual', 0) / actual_months
+            print(f"\n📈 Average monthly spend (actual): ${avg_actual:,.2f}")
+
+        if forecast_months > 0:
+            avg_forecast = forecast_data.get('total_forecast', 0) / forecast_months
+            print(f"📈 Average monthly forecast:       ${avg_forecast:,.2f}")
+
+        return forecast_data
+
     def analyze_time_trends(self, results_by_time):
         """Analyze monthly cost trends"""
         print("\n" + "="*80)
@@ -537,6 +787,69 @@ class EC2CostAnalyzer:
             print(f"📊 Average monthly cost: ${avg_cost:,.2f}")
 
         return monthly_costs
+
+    def analyze_total_aws_costs(self, results_by_time):
+        """Analyze total AWS costs (all services) by time period"""
+        print("\n" + "="*80)
+        print("TOTAL AWS COSTS (ALL SERVICES)")
+        print("="*80)
+
+        monthly_costs = []
+        for result in results_by_time:
+            period = result['TimePeriod']
+            cost = float(result['Total']['UnblendedCost']['Amount'])
+
+            monthly_costs.append({
+                'period': f"{period['Start']} to {period['End']}",
+                'cost': cost
+            })
+
+            print(f"\nPeriod: {period['Start']} to {period['End']}")
+            print(f"  Total AWS Cost: ${cost:,.2f}")
+
+        if len(monthly_costs) >= 2:
+            total_cost = sum(m['cost'] for m in monthly_costs)
+            avg_cost = total_cost / len(monthly_costs)
+            print(f"\n📊 Total 3-month AWS cost: ${total_cost:,.2f}")
+            print(f"📊 Average monthly AWS cost: ${avg_cost:,.2f}")
+
+        return monthly_costs
+
+    def analyze_service_costs(self, results_by_service):
+        """Analyze costs by AWS service"""
+        print("\n" + "="*80)
+        print("COST BREAKDOWN BY AWS SERVICE")
+        print("="*80)
+
+        # Aggregate costs across all time periods
+        service_costs = defaultdict(float)
+
+        for result in results_by_service:
+            for group in result.get('Groups', []):
+                service = group['Keys'][0]
+                cost = float(group['Metrics']['UnblendedCost']['Amount'])
+                service_costs[service] += cost
+
+        # Sort by cost descending
+        sorted_services = sorted(service_costs.items(), key=lambda x: x[1], reverse=True)
+
+        total_cost = sum(service_costs.values())
+
+        print(f"\nAWS Services by Cost (Total: ${total_cost:,.2f}):\n")
+
+        for i, (service, cost) in enumerate(sorted_services[:15], 1):
+            percentage = (cost / total_cost * 100) if total_cost > 0 else 0
+            bar = "█" * int(percentage / 2)
+            # Truncate long service names
+            service_short = service[:40] + "..." if len(service) > 40 else service
+            print(f"{i:2d}. {service_short:45s} ${cost:12,.2f} ({percentage:5.1f}%) {bar}")
+
+        if len(sorted_services) > 15:
+            other_cost = sum(cost for _, cost in sorted_services[15:])
+            other_pct = (other_cost / total_cost * 100) if total_cost > 0 else 0
+            print(f"    {'Others':45s} ${other_cost:12,.2f} ({other_pct:5.1f}%)")
+
+        return dict(sorted_services)
 
     def analyze_instance_types(self, results_by_instance_type):
         """Analyze costs by instance type"""
@@ -1248,10 +1561,19 @@ class EC2CostAnalyzer:
 
         print(f"\n📄 Detailed report saved to: {filename}")
 
-    def run_analysis(self):
-        """Run complete EC2 cost analysis"""
+    def run_analysis(self, save_report: bool = True) -> dict:
+        """
+        Run complete EC2 cost analysis.
+
+        Args:
+            save_report: If True, save JSON report to file. Default True.
+
+        Returns:
+            Dictionary containing all analysis data.
+        """
+        account_display = f" - {self.account_name}" if self.account_name else ""
         print("\n" + "="*80)
-        print("EC2 COST ANALYSIS - LAST 3 MONTHS")
+        print(f"EC2 COST ANALYSIS - LAST 3 MONTHS{account_display}")
         print("="*80)
         print()
 
@@ -1263,11 +1585,19 @@ class EC2CostAnalyzer:
         region_data = self.fetch_costs_by_region()
         usage_type_data = self.fetch_costs_by_usage_type()
 
+        # Fetch total AWS costs (all services)
+        total_aws_time_data = self.fetch_total_aws_costs_by_time()
+        service_breakdown_data = self.fetch_costs_by_service()
+
         # Analyze Cost Explorer data
         monthly_costs = self.analyze_time_trends(time_data)
         instance_costs = self.analyze_instance_types(instance_type_data)
         region_costs = self.analyze_regions(region_data)
         usage_costs = self.analyze_usage_types(usage_type_data)
+
+        # Analyze total AWS costs
+        total_aws_monthly_costs = self.analyze_total_aws_costs(total_aws_time_data)
+        service_costs = self.analyze_service_costs(service_breakdown_data)
 
         # Fetch and analyze tags from Cost Explorer
         tag_keys = self.fetch_available_tag_keys()
@@ -1330,6 +1660,9 @@ class EC2CostAnalyzer:
         tag_compliance_data = self.fetch_tag_compliance()
         ri_sp_data = self.fetch_ri_savings_plans_data()
 
+        # Fiscal Year Forecast (April to April - all AWS spend)
+        fiscal_year_forecast_data = self.fetch_fiscal_year_forecast()
+
         # =================================================================
         # PHASE 3: ENHANCED ANALYSIS (New - Prioritized)
         # =================================================================
@@ -1352,6 +1685,9 @@ class EC2CostAnalyzer:
         # 6. Tag Compliance (Detailed)
         tag_compliance_analysis = self.analyze_tag_compliance_detailed(tag_compliance_data)
 
+        # 7. Fiscal Year Forecast (April to April)
+        fiscal_year_forecast = self.analyze_fiscal_year_forecast(fiscal_year_forecast_data)
+
         # =================================================================
         # PHASE 4: GENERATE ACTION PLAN
         # =================================================================
@@ -1373,15 +1709,21 @@ class EC2CostAnalyzer:
         # =================================================================
         all_data = {
             'generated_at': datetime.now().isoformat(),
+            'account_id': self.account_id,
+            'account_name': self.account_name,
             'time_period': self.get_date_range(),
 
-            # Cost Explorer data
+            # Cost Explorer data - EC2 specific
             'monthly_costs': monthly_costs,
             'instance_type_costs': instance_costs,
             'region_costs': region_costs,
             'usage_type_costs': usage_costs,
             'tag_keys': tag_keys,
             'tag_analysis': tag_analysis,
+
+            # Total AWS costs (all services)
+            'total_aws_monthly_costs': total_aws_monthly_costs,
+            'service_costs': service_costs,
 
             # Enhanced optimization data
             'cloudwatch_analysis': cw_analysis,
@@ -1391,12 +1733,18 @@ class EC2CostAnalyzer:
             'ri_sp_analysis': ri_sp_analysis,
             'tag_compliance_analysis': tag_compliance_analysis,
 
+            # Fiscal Year Forecast (April to April - all AWS spend)
+            'fiscal_year_forecast': fiscal_year_forecast,
+
             # Action plan
             'action_plan': action_plan
         }
-        self.save_detailed_report(all_data)
+
+        if save_report:
+            self.save_detailed_report(all_data)
 
         print("\n✓ Analysis complete!")
+        return all_data
 
 
 if __name__ == '__main__':
